@@ -1,0 +1,11 @@
+*.aux
+*.fmt
+*.log
+*.out
+*.prv
+*.synctex.gz
+_region_.*
+
+/auto/*
+/examples/*
+/_region_.prv/*

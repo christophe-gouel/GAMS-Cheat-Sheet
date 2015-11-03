@@ -1,0 +1,402 @@
+\documentclass[10pt,landscape,a4paper]{article}
+
+\usepackage{array,tabularx,booktabs}
+
+\usepackage{graphicx}
+
+\usepackage{multicol}
+\usepackage{calc}
+\usepackage{ifthen}
+\usepackage[landscape]{geometry}
+\usepackage{hyperref}
+\hypersetup{%
+  bookmarksopen=false,%
+  citecolor=black,%
+  urlcolor=black,%
+  linkcolor=black,%
+  filecolor=black,%
+  colorlinks=true,%
+  pdfauthor={Christophe Gouel},%
+  pdftitle={GAMS Cheat Sheet},%
+  pdfstartview={Fit}}
+\usepackage{color}
+
+\usepackage{etoolbox}
+\makeatletter
+\preto{\@verbatim}{\topsep=0pt \partopsep=0pt }
+\makeatother
+
+% This sets page margins to .5 inch if using letter paper, and to 1cm
+% if using A4 paper. (This probably isn't strictly necessary.)
+% If using another size paper, use default 1cm margins.
+\ifthenelse{\lengthtest { \paperwidth = 11in}}
+	{ \geometry{top=.5in,left=.5in,right=.5in,bottom=.5in} }
+	{\ifthenelse{ \lengthtest{ \paperwidth = 297mm}}
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+	}
+
+% Turn off header and footer
+\pagestyle{empty}
+
+% Redefine section commands to use less space
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%x
+                                {\color{blue}\normalfont\large\bfseries}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{0mm}%
+                                {-1explus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%
+                                {\normalfont\normalsize\bfseries}}
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {1ex plus .2ex}%
+                                {\normalfont\small\bfseries}}
+\makeatother
+
+% Define BibTeX command
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+% Don't print section numbers
+\setcounter{secnumdepth}{0}
+
+
+\setlength{\parindent}{0pt}
+%\setlength{\parskip}{0pt plus 0.5ex}
+\setlength{\parskip}{1pt plus 0.5ex}
+
+% -----------------------------------------------------------------------
+
+\begin{document}
+
+\raggedright
+\footnotesize
+\begin{multicols}{2}
+
+
+% multicol parameters
+% These lengths are set only within the two main columns
+%\setlength{\columnseprule}{0.25pt}
+\setlength{\premulticols}{1pt}
+\setlength{\postmulticols}{1pt}
+\setlength{\multicolsep}{1pt}
+\setlength{\columnsep}{2pt}
+
+\begin{center}
+     \Large{\textbf{GAMS Cheat Sheet}} \\
+\end{center}
+
+\section{Declarations}
+GAMS objects have to be declared before their first use. Main objects are\\
+\begin{tabularx}{\columnwidth}{@{}>{\ttfamily}l>{\raggedright\arraybackslash}X@{}}
+  set & Collection of elements used for indexing. $S=\left\{a,b,c\right\}$ is
+  written in GAMS as \texttt{SET S / a, b, c /;}. A sequence of elements, such
+  as t=1990:2010, can be entered as
+  \texttt{SET t 'Year' / 1900*2010 /;}\\
+  parameter\textrm{, }scalar\textrm{, }table & Exogenous parameters to be
+  entered
+  or calculated by the modeler. \\
+  variable & Endogenous variables to be determined by GAMS. It is possible to
+  enter the following prefixes before \texttt{variable} to specify the variable
+  type:
+  \texttt{positive}, \texttt{negative}, \texttt{binary} (variable is 0 or 1), \texttt{integer}.\\
+  equation   & Symbolic equations. \\
+  model & Collection of equations. To declare a model that includes all the
+  equations:\linebreak{} \texttt{model} \emph{model\_name} \texttt{/ all
+    /;}. \linebreak{}To include a list of equations:\linebreak{} \texttt{model}
+  \emph{model\_name} \texttt{/} \emph{eq\_name1}\texttt{,} \emph{eq\_name2}
+  \texttt{/;}
+\end{tabularx}
+
+\section{Data entry}
+The general expression for declaring and initializing parameters is\\
+\emph{parameter\_type} \emph{parameter\_name} [\emph{parameter\_description}] [\verb!/!
+\emph{parameter\_value} \verb!/!]\verb!;!\\
+Examples:
+\begin{verbatim}
+scalar rho "discount rate" / .15 /;
+parameter b(i) / seattle 20, san-diego 45 /;
+          salaries(employee,manager,department)
+            /anderson .murphy .toy       = 6000
+               hendry .smith  .toy       = 9000
+              hoffman .morgan .cosmetics = 8000 / ;
+\end{verbatim}
+
+\section{Variable attributes}
+To each variable is associated a series of attributes:\\
+\begin{tabularx}{\columnwidth}{@{}>{\ttfamily}lX@{}}
+  .l & Level of the variable. Receives new values when a model is solved.\\
+  .lo & Lower bound (default to \texttt{-inf}).\\
+  .up & Upper bound (default to \texttt{inf}).\\
+  .fx & To fix a variable (set in one command the same value to level, lower
+  and upper bounds):\linebreak{}
+  \texttt{x.fx(i) = 1;}\\
+  .m & Marginal (or dual) value. Receives new values when a model is solved.
+\end{tabularx}
+
+\section{Arithmetic and functions}
+Arithmetic operations:\\
+\verb!+!, \verb!-!, \verb!*!, \verb!/!, \verb!**! (exponentiation).
+
+Most common functions:\\
+\verb!abs()!, \verb!cos()!, \verb!exp()!, \verb!log()!, \verb!log10()!,
+\verb!max(,...,)!, \verb!min(,...,)!, \verb!power(,)!, \verb!round()!,
+\verb!sin()!.
+
+Relationship operators:\\
+\verb!lt!, \verb!<!, \verb!le!, \verb!<=!, \verb!eq!, \verb!=!, \verb!ne!, \verb!<>!, \verb!ge!, \verb!>=!, \verb!gt!, \verb!>!.
+
+Logical operators:\\
+\verb!not!, \verb!and!, \verb!or!, \verb!xor!.
+
+Special symbols:\\
+\begin{tabular}{@{}ll@{}}
+  \verb!inf!& Plus infinity.\\
+  \verb!-inf!& Minus infinity.\\
+  \verb!na!& Not available.\\
+  \verb!undf!& Undefined.\\
+  \verb!eps!& Very close to zero, but different from zero.
+\end{tabular}
+
+\section{Conditional expressions with dollar condition}
+
+Logical expression can be expressed with a dollar condition. For example:\\
+\texttt{a\$(b > 1.5) = 2;} means if \texttt{b} is greater than \texttt{1.5} then
+\texttt{a} equals \texttt{2}. If \texttt{b} is less than-or-equal to
+\texttt{1.5} then the value of \texttt{a} remains unchanged.
+
+It can also be used on the right hand side. For example:\\
+\texttt{a = 2\$(b > 1.5);} means that \texttt{a} equals \texttt{2} if \texttt{b}
+is greater than \texttt{1.5}, else \texttt{a} equals \texttt{0}.
+
+\section{Indexing}
+
+\subsection{Basic indexing}
+
+\begin{tabularx}{\columnwidth}{@{}>{\ttfamily}lX@{}}
+x(i) = 12; & Assign all elements of \texttt{x} to 12.\\
+b('seattle') = 20; & Assign the element \texttt{seattle} of \texttt{b} to 20.\\
+sum(i,x(i)) & Sum \texttt{x} over the set \texttt{i}: $\sum_{i}x_{i}$.\\
+sum((i,j),x(i,j)) & Sum \texttt{x} over the sets \texttt{i} and \texttt{j}: $\sum_{i,j}x_{i,j}$.\\
+prod(j,y(i,j) & Multiply \texttt{y} over the set \texttt{j}:
+$\prod_{j}y_{i,j}$.\\
+alias(i,j) & Declare that the set \texttt{j} can be used instead of
+\texttt{i}.\\
+y = smax(i,x(i)); \textrm{or} y = smin(i,x(i)); & Find the largest or smallest
+value of a symbol indexed over a set.
+\end{tabularx}
+
+\subsection{Advanced indexing}
+
+On ordered sets (for example one defined by \texttt{SET t 'Year' / 1900*2010 /;}):
+\begin{tabularx}{\columnwidth}{@{}>{\ttfamily}l>{\raggedright\arraybackslash}X@{}}
+ord(t)& Returns the position of a member in a set:\linebreak{}
+\texttt{parameter val(t);}\linebreak{}
+\texttt{val(t) = ord(t);}\linebreak{}
+Here \texttt{val('1900')} will be \texttt{1}, \texttt{val('1909')} \texttt{10}, and \texttt{val('2010')} \texttt{111}.\\
+card(t) & Returns the number of elements in a set: \texttt{card(t)} will return \texttt{111}.\\
+\textrm{lags and leads} & It is possible to use lag or lead operators on ordered
+sets. For example an equation defining the evolution of capital stock would
+be:\linebreak{}
+\texttt{eq\_k(t+1).. k(t+1) =e= (1-delta)*k(t) + i(t);}
+\end{tabularx}
+
+\texttt{sameas(r,s)} can be used to test if the active elements of \texttt{r}
+and \texttt{s} are the same. For example: \texttt{a(r,s)\$(not sameas(r,s)) =
+  10;} would assign \texttt{10} to all non-diagonal elements of \texttt{a}.
+
+It is possible to define subsets: sets whose members must all be members of some
+larger sets. For example:\\
+\begin{verbatim}
+set
+  i "all sectors" / light-ind, food+agr, heavy-ind, services /
+  t(i) "traded sectors" / light-ind, food+agr, heavy-ind /;
+\end{verbatim}
+The assignment can also be made dynamically:
+\begin{tabularx}{\columnwidth}{@{}>{\ttfamily}l>{\raggedright\arraybackslash}X@{}}
+set j(i);& Declare \texttt{j} as a subset of \texttt{i}. \\
+j(i) = yes;& Assign all elements of \texttt{i} to \texttt{j}.\\
+j('light-ind') = no;& Remove the element \texttt{'light-ind'} from \texttt{j}.
+\end{tabularx}
+Or alternatively: \texttt{j(i)\$(not sameas(i,'light-ind')) = yes;}.  
+
+Subsets present the following restrictions: it is not possible to declare
+variables defined on subsets; and they are not ordered, even if their parent
+sets are.
+
+\section{Equation definition}
+An equation named \emph{eqname} is defined by\\
+\emph{eqname}(\emph{index})\verb!..! expression \emph{eq\_type} expression \verb!;!
+
+Main equation types (\emph{eq\_type}):\\
+\begin{tabular}{@{}ll@{}}
+  \verb!=e=! & Equality: rhs must equal lhs.\\
+  \verb!=g=! & Greater than: lhs must be greater than or equal to rhs.\\
+  \verb!=l=! & Less than: lhs must be less than or equal to rhs.
+\end{tabular}
+
+\columnbreak{}
+\section{Solve statement}
+\verb!solve! \emph{model\_name} \verb!using! \emph{model\_type} (\verb!maximizing|minimizing! \emph{objective\_name})
+
+Main model types (\emph{model\_type}):\\
+\begin{tabularx}{\columnwidth}{@{}>{\ttfamily}lX@{}}
+cns  & Constrained Nonlinear System: square system of nonlinear
+equations, $f\left(x\right)=0$.\\
+lp  & Linear programming: optimization problem with linear objective and constraints.\\
+mcp  & Mixed Complementarity Problem.\\
+nlp  & Nonlinear programming: optimization problem with nonlinear
+objective and constraints.\\
+qcp  & Quadratic constraint programming: optimization problem with
+quadratic objective and constraints.
+\end{tabularx}
+
+\section{Display}
+
+\verb!display x, y.l;! to ask GAMS to write in the listing file (file with the
+\texttt{.lst} extension) the value of \verb!x!  and \verb!y!. For variables, one
+has to precise the attribute (\verb!.l! here).
+
+\verb!option decimals = N! to restrict the display to the first \verb!N!
+decimals.
+
+\section{Flow control}
+
+GAMS contains 3 types of loops:
+\begin{description}
+\item[\texttt{for}] to loop over a parameter:\\
+\begin{verbatim}
+scalar i;
+for(i = 1 to 1000 by 10,
+  display i;
+);
+\end{verbatim}
+\item[\texttt{loop}] to loop over a set:\\
+  \verb!loop(t, pop(t+1) = pop(t) + growth(t));!
+\item[\texttt{while}] to loop over a general condition:\\
+\begin{verbatim}
+scalar x / 0 /;
+while(x <= 10,
+  x = x + 1;
+);
+\end{verbatim}
+\end{description}
+
+Use of the \verb!if-else! statement:\\
+\begin{verbatim}
+if(x <= 0,
+  y = 1;
+elseif(x > 0 and x < 1),
+  y = 2;
+else
+  y = 3;
+);
+\end{verbatim}
+
+To stop GAMS if a condition is met use \verb!abort!:\\
+\verb!abort$(abs(residuals) <= 1E-6) "Residual not null", residuals;!
+
+\section{Dollar control}
+
+Dollar control options can alter GAMS behavior in several ways. The \$ symbol
+must always be placed in the first column. They are executed at compile time, so
+before any calculation take place. Most important dollar control options:
+\begin{tabularx}{\columnwidth}{@{}>{\ttfamily}lX@{}}
+\$exit & GAMS stop reading the file after \texttt{\$exit}.\\
+\$include & Use \texttt{\$include filename} to insert the contents of the
+file.\\
+\$ontext\textrm{/}\$offtext & Use to enclose severals lines of comments.\\
+\$set & Use \texttt{\$set varname varvalue} to define an environmental
+variable, which can be called later using \texttt{\%varname\%}.
+\end{tabularx}
+
+\section{Options}
+
+Some options can be set using the following syntax:\\
+\texttt{option} \emph{option\_name} \texttt{=} \emph{option\_value}\texttt{;}\\
+Main options:\\
+\begin{tabularx}{\columnwidth}{@{}>{\ttfamily}lcX@{}}
+  \emph{\textrm{option\_name}} & Default & Interpretation \\
+  \toprule
+  decimals & 3 & Number of decimals printed.\\
+  iterlim& 1000 & Limit on the number of iterations used to solve a model. \\
+  limcol& 3 & Control the number of columns (variables) listed at each solve.\\
+  limrow& 3 & Control the number of rows (equations) listed at each solve.\\
+  reslim& 1000 & Limit on the units of processor time used to solve a model.\\
+  \emph{\textrm{solver}} \textrm{(}cns\textrm{, }nlp\textrm{, }lp\textrm{, \ldots)}&
+  Installation default& Control the solver used to solve a particular model type.
+\end{tabularx}
+Example: \texttt{option limcol = 0;}
+
+\section{Comments}
+
+A line starting with an asterisk '\verb!*!' is commented:\\
+\verb!* This line is a comment!
+
+To comment several lines, it is possible to place them between a pair of
+\verb!$ontext!/\verb!$offtext!:\\
+\begin{verbatim}
+$ontext
+Any lines between $ontext and $offtext are commented
+$offtext
+\end{verbatim}
+
+End-of-line comments can be enabled using \verb!$eolcom! followed by the
+chosen special character:\\
+\begin{verbatim}
+$eolcom #
+x = 1; # This is an end-of-line comment
+\end{verbatim}
+
+In-line comments can be enabled using \verb!$inlinecom! followed by a pair of
+one or two character sequence (default to \verb!/* */!):\\
+\begin{verbatim}
+$inlinecom { }
+x { This is an in-line comment } = 1;
+\end{verbatim}
+
+\section{GDX files}
+\label{sec:gdx-files}
+
+A GDX file is a binary file that can contains information on sets, parameters,
+variables, and equations. GDX files are very useful to enter data, to explore
+results, and to import/export data from various file formats (e.g., csv, Excel,
+\ldots).
+
+\subsection{Compile phase (before any calculation)}
+
+\begin{tabularx}{1.0\columnwidth}{@{}>{\ttfamily}lX@{}}
+  \$gdxin \emph{\textrm{file\_name.gdx}} & Open the GDX file for reading. \\
+  \$load \emph{\textrm{id1 id2=gdxid2}} & Read symbols \emph{id1} and
+  \emph{gdxid2} from the GDX
+  file and assign them to \emph{id1} and \emph{id2} that have been previously declared. \\
+  \$gdxin & Close the GDX file currently open.
+\end{tabularx}
+Same thing with \texttt{\$gdxout} and \texttt{\$unload} to write data to a GDX
+file during the compile phase.
+
+\subsection{Execution phase (after calculations)}
+
+\begin{tabularx}{1.0\columnwidth}{@{}>{\ttfamily}lX@{}}
+  execute\_load '\emph{\textrm{file\_name.gdx}}' \emph{\textrm{id1, id2=gdxid2}}
+  & Read symbols \emph{id1} and \emph{gdxid2} from the GDX
+  file and assign them to \emph{id1} and \emph{id2} that have been previously declared.\\
+  execute\_unload '\emph{\textrm{file\_name.gdx}}' \emph{\textrm{id1,
+      id2=gdxid2}} & Write to the GDX file the symbols \emph{id1} and \emph{id2}
+  and assign \emph{id2} to the symbol \emph{gdxid2}.
+\end{tabularx}
+
+\vspace{0.5cm}
+\rule{3cm}{0.5pt}
+
+\href{http://creativecommons.org/publicdomain/zero/1.0/}{\includegraphics[height=1.75ex]{CC0-small.png}}
+\href{http://www.christophegouel.com}{Christophe Gouel}. Include materials from \emph{GAMS -- A User's Guide} (with permissions). \\
+See \url{https://github.com/christophe-gouel/GAMS-Cheat-Sheet} for the sources.
+
+Revision: 1.0, Date: \today{}.
+
+\end{multicols}
+
+\end{document}
