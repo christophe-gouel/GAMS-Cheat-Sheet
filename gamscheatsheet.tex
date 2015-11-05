@@ -94,7 +94,8 @@ GAMS objects have to be declared before their first use. Main objects are\\
   set & Collection of elements used for indexing. $S=\left\{a,b,c\right\}$ is
   written in GAMS as \texttt{SET S / a, b, c /;}. A sequence of elements, such
   as t=1990:2010, can be entered as
-  \texttt{SET t 'Year' / 1900*2010 /;}\\
+  \texttt{SET t 'Year' / 1900*2010 /;}, where \texttt{'Year'} is an optional
+  explanatory text.\\
   parameter\textrm{, }scalar\textrm{, }table & Exogenous parameters to be
   entered
   or calculated by the modeler. \\
@@ -117,7 +118,7 @@ The general expression for declaring and initializing parameters is\\
 Examples:
 \begin{verbatim}
 scalar rho "discount rate" / .15 /;
-parameter b(i) / seattle 20, san-diego 45 /;
+parameter b(i) / seattle 20, san-diego 45 /
           salaries(employee,manager,department)
             /anderson .murphy .toy       = 6000
                hendry .smith  .toy       = 9000
@@ -220,7 +221,7 @@ set j(i);& Declare \texttt{j} as a subset of \texttt{i}. \\
 j(i) = yes;& Assign all elements of \texttt{i} to \texttt{j}.\\
 j('light-ind') = no;& Remove the element \texttt{'light-ind'} from \texttt{j}.
 \end{tabularx}
-Or alternatively: \texttt{j(i)\$(not sameas(i,'light-ind')) = yes;}.  
+Or alternatively: \texttt{j(i)\$(not sameas(i,'light-ind')) = yes;}.
 
 Subsets present the following restrictions: it is not possible to declare
 variables defined on subsets; and they are not ordered, even if their parent
