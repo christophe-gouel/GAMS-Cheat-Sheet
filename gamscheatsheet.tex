@@ -139,7 +139,9 @@ To each variable is associated a series of attributes:\\
 
 \section{Arithmetic and functions}
 Arithmetic operations:\\
-\verb!+!, \verb!-!, \verb!*!, \verb!/!, \verb!**! (exponentiation).
+\verb!+!, \verb!-!, \verb!*!, \verb!/!, \verb!**! (exponentiation, \verb!x**y!
+is defined only for \verb!x!$\ge$0, if \texttt{x} can be negative, use
+\verb!power(x,y)! instead).
 
 Most common functions:\\
 \verb!abs()!, \verb!cos()!, \verb!exp()!, \verb!log()!, \verb!log10()!,
@@ -153,13 +155,15 @@ Logical operators:\\
 \verb!not!, \verb!and!, \verb!or!, \verb!xor!.
 
 Special symbols:\\
-\begin{tabular}{@{}ll@{}}
-  \verb!inf!& Plus infinity.\\
-  \verb!-inf!& Minus infinity.\\
-  \verb!na!& Not available.\\
-  \verb!undf!& Undefined.\\
-  \verb!eps!& Very close to zero, but different from zero.
-\end{tabular}
+\begin{tabularx}{\columnwidth}{@{}>{\ttfamily}l>{\raggedright\arraybackslash}X@{}}
+  inf& Plus infinity.\\
+  -inf& Minus infinity.\\
+  na& Not available, used for missing data.\\
+  undf& Undefined, result of an undefined operation such as \texttt{3/0}.\\
+  eps& Numerically equal to zero, but considered as existing. For example,
+  \texttt{sum(i\$z(i),1)} equals \texttt{0} if \texttt{z(i)=0} and
+  \texttt{sum(i\$z(i),1)} equals \texttt{card(i)} if \texttt{z(i)=eps}.
+\end{tabularx}
 
 \section{Conditional expressions with dollar condition}
 
@@ -297,7 +301,7 @@ else
 \end{verbatim}
 
 To stop GAMS if a condition is met use \verb!abort!:\\
-\verb!abort$(abs(residuals) <= 1E-6) "Residual not null", residuals;!
+\verb!abort$(abs(residuals) > 1E-6) "Residual not null", residuals;!
 
 \section{Dollar control}
 
@@ -396,7 +400,7 @@ file during the compile phase.
 \href{http://www.christophegouel.com}{Christophe Gouel}. Include materials from \emph{GAMS -- A User's Guide} (with permissions). \\
 See \url{https://github.com/christophe-gouel/GAMS-Cheat-Sheet} for the sources.
 
-Revision: 1.0, Date: \today{}.
+Revision: 1.1, Date: \today{}.
 
 \end{multicols}
 

@@ -5,6 +5,7 @@
 *.prv
 *.synctex.gz
 _region_.*
+.dropbox*
 
 /auto/*
 /examples/*
