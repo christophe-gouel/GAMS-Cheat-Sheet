@@ -219,7 +219,8 @@ set
   i "all sectors" / light-ind, food+agr, heavy-ind, services /
   t(i) "traded sectors" / light-ind, food+agr, heavy-ind /;
 \end{verbatim}
-The assignment can also be made dynamically:
+The assignment can also be made dynamically (the set is then called a dynamic
+set):
 \begin{tabularx}{\columnwidth}{@{}>{\ttfamily}l>{\raggedright\arraybackslash}X@{}}
 set j(i);& Declare \texttt{j} as a subset of \texttt{i}. \\
 j(i) = yes;& Assign all elements of \texttt{i} to \texttt{j}.\\
@@ -227,9 +228,9 @@ j('light-ind') = no;& Remove the element \texttt{'light-ind'} from \texttt{j}.
 \end{tabularx}
 Or alternatively: \texttt{j(i)\$(not sameas(i,'light-ind')) = yes;}.
 
-Subsets present the following restrictions: it is not possible to declare
-variables defined on subsets; and they are not ordered, even if their parent
-sets are.
+Dynamic subsets present the following restrictions: it is not possible to
+declare variables defined on dynamic subsets; and they are not ordered, even if
+their parent sets are.
 
 \section{Equation definition}
 An equation named \emph{eqname} is defined by\\
@@ -400,7 +401,7 @@ file during the compile phase.
 \href{http://www.christophegouel.com}{Christophe Gouel}. Include materials from \emph{GAMS -- A User's Guide} (with permissions). \\
 See \url{https://github.com/christophe-gouel/GAMS-Cheat-Sheet} for the sources.
 
-Revision: 1.1, Date: \today{}.
+Revision: 1.2, Date: \today{}.
 
 \end{multicols}
 
