@@ -4,6 +4,10 @@
 
 \usepackage{graphicx}
 
+% Color
+\usepackage{color}
+\definecolor{DarkBlue}{rgb}{0,0.08,0.45}
+
 \usepackage{multicol}
 \usepackage{calc}
 \usepackage{ifthen}
@@ -12,14 +16,13 @@
 \hypersetup{%
   bookmarksopen=false,%
   citecolor=black,%
-  urlcolor=black,%
+  urlcolor=DarkBlue,%
   linkcolor=black,%
   filecolor=black,%
   colorlinks=true,%
   pdfauthor={Christophe Gouel},%
   pdftitle={GAMS Cheat Sheet},%
   pdfstartview={Fit}}
-\usepackage{color}
 
 \usepackage{etoolbox}
 \makeatletter
@@ -93,17 +96,19 @@ GAMS objects have to be declared before their first use. Main objects are\\
 \begin{tabularx}{\columnwidth}{@{}>{\ttfamily}l>{\raggedright\arraybackslash}X@{}}
   set & Collection of elements used for indexing. $S=\left\{a,b,c\right\}$ is
   written in GAMS as \texttt{SET S / a, b, c /;}. A sequence of elements, such
-  as t=1990:2010, can be entered as
-  \texttt{SET t 'Year' / 1900*2010 /;}, where \texttt{'Year'} is an optional
+  as t=1990:2010, can be entered as \texttt{SET t 'Year' / 1900*2010 /;}, where
+  \texttt{'Year'} is an optional
   explanatory text.\\
-  parameter\textrm{, }scalar\textrm{, }table & Exogenous parameters to be
-  entered
-  or calculated by the modeler. \\
+  parameter\textrm{, }scalar\textrm{, }table & Exogenous data (given input) to
+  be entered or calculated by the modeler. \texttt{scalar} is 0-dimenional,
+  \texttt{parameter} is n-dimensional and \texttt{table} is a n-dimensional parameter
+  that expects the input in table format.
+  \\
   variable & Endogenous variables to be determined by GAMS. It is possible to
   enter the following prefixes before \texttt{variable} to specify the variable
   type:
   \texttt{positive}, \texttt{negative}, \texttt{binary} (variable is 0 or 1), \texttt{integer}.\\
-  equation   & Symbolic equations. \\
+  equation   & Keyword to define an algebraic relationship between variables. \\
   model & Collection of equations. To declare a model that includes all the
   equations:\linebreak{} \texttt{model} \emph{model\_name} \texttt{/ all
     /;}. \linebreak{}To include a list of equations:\linebreak{} \texttt{model}
@@ -112,9 +117,8 @@ GAMS objects have to be declared before their first use. Main objects are\\
 \end{tabularx}
 
 \section{Data entry}
-The general expression for declaring and initializing parameters is\\
-\emph{parameter\_type} \emph{parameter\_name} [\emph{parameter\_description}] [\verb!/!
-\emph{parameter\_value} \verb!/!]\verb!;!\\
+The general expression to declare and define data is\\
+\emph{data\_type} \emph{symbol\_name} [\emph{symbol\_description}] [\verb!/! \emph{symbol\_value} \verb!/!]\verb!;!\\
 Examples:
 \begin{verbatim}
 scalar rho "discount rate" / .15 /;
@@ -127,15 +131,14 @@ parameter b(i) / seattle 20, san-diego 45 /
 
 \section{Variable attributes}
 To each variable is associated a series of attributes:\\
-\begin{tabularx}{\columnwidth}{@{}>{\ttfamily}lX@{}}
+\begin{tabular}{@{}>{\ttfamily}ll@{}}
   .l & Level of the variable. Receives new values when a model is solved.\\
   .lo & Lower bound (default to \texttt{-inf}).\\
   .up & Upper bound (default to \texttt{inf}).\\
-  .fx & To fix a variable (set in one command the same value to level, lower
-  and upper bounds):\linebreak{}
+  .fx & To fix a variable (sets the value for the attributes .l, .lo and .up):\linebreak{}
   \texttt{x.fx(i) = 1;}\\
   .m & Marginal (or dual) value. Receives new values when a model is solved.
-\end{tabularx}
+\end{tabular}
 
 \section{Arithmetic and functions}
 Arithmetic operations:\\
@@ -143,7 +146,8 @@ Arithmetic operations:\\
 is defined only for \verb!x!$\ge$0, if \texttt{x} can be negative, use
 \verb!power(x,y)! instead).
 
-Most common functions:\\
+Most common functions
+(see the \href{http://www.gams.com/help/topic/gams.doc/userguides/userguide/_u_g__parameters.html?cp=0_2_0_1_3_2_2_0#UG_Parameters_IntrinsicFunctions}{documentation} for the list of intrinsic functions):\\
 \verb!abs()!, \verb!cos()!, \verb!exp()!, \verb!log()!, \verb!log10()!,
 \verb!max(,...,)!, \verb!min(,...,)!, \verb!power(,)!, \verb!round()!,
 \verb!sin()!.
@@ -219,6 +223,9 @@ set
   i "all sectors" / light-ind, food+agr, heavy-ind, services /
   t(i) "traded sectors" / light-ind, food+agr, heavy-ind /;
 \end{verbatim}
+Note that a subset is ordered when the indices are entered in the same order as
+the ordered parent set.
+
 The assignment can also be made dynamically (the set is then called a dynamic
 set):
 \begin{tabularx}{\columnwidth}{@{}>{\ttfamily}l>{\raggedright\arraybackslash}X@{}}
@@ -234,7 +241,8 @@ their parent sets are.
 
 \section{Equation definition}
 An equation named \emph{eqname} is defined by\\
-\emph{eqname}(\emph{index})\verb!..! expression \emph{eq\_type} expression \verb!;!
+\emph{eqname}(\emph{index})\verb!..! expression \emph{eq\_type} expression \verb!;!\\
+Example: \verb!cost.. z =e= sum((i,j), c(i,j)*x(i,j));!
 
 Main equation types (\emph{eq\_type}):\\
 \begin{tabular}{@{}ll@{}}
@@ -245,14 +253,17 @@ Main equation types (\emph{eq\_type}):\\
 
 \columnbreak{}
 \section{Solve statement}
-\verb!solve! \emph{model\_name} \verb!using! \emph{model\_type} (\verb!maximizing|minimizing! \emph{objective\_name})
+\verb!solve! \emph{model\_name} \verb!using! \emph{model\_type} (\verb!maximizing|minimizing! \emph{objective\_name})\verb!;!\\
+Example: \verb!solve transport using lp minimizing z;!
 
 Main model types (\emph{model\_type}):\\
 \begin{tabularx}{\columnwidth}{@{}>{\ttfamily}lX@{}}
 cns  & Constrained Nonlinear System: square system of nonlinear
 equations, $f\left(x\right)=0$.\\
 lp  & Linear programming: optimization problem with linear objective and constraints.\\
-mcp  & Mixed Complementarity Problem.\\
+mcp  & Mixed complementarity problem.\\
+mip & Mixed integer programming: linear opt. pb. with a mix of
+continuous and integer variables.\\
 nlp  & Nonlinear programming: optimization problem with nonlinear
 objective and constraints.\\
 qcp  & Quadratic constraint programming: optimization problem with
@@ -306,28 +317,36 @@ To stop GAMS if a condition is met use \verb!abort!:\\
 
 \section{Dollar control}
 
-Dollar control options can alter GAMS behavior in several ways. The \$ symbol
-must always be placed in the first column. They are executed at compile time, so
-before any calculation take place. Most important dollar control options:
+Dollar control options can alter GAMS behavior in several ways. The \texttt{\$}
+symbol can be placed in the first column or elsewhere on a line if using
+\texttt{\$\$} as first two characters. They are executed at compile time, so
+before any calculation takes place. Most important dollar control options (see
+the
+\href{http://www.gams.com/help/topic/gams.doc/userguides/userguide/_u_g__dollar_control_options.html?cp=0_2_0_2_3_1#UG_DollarControl_ListOfDollarControlOptions}{documentation}
+for the complete list):
 \begin{tabularx}{\columnwidth}{@{}>{\ttfamily}lX@{}}
 \$exit & GAMS stop reading the file after \texttt{\$exit}.\\
 \$include & Use \texttt{\$include filename} to insert the contents of the
 file.\\
 \$ontext\textrm{/}\$offtext & Use to enclose severals lines of comments.\\
 \$set & Use \texttt{\$set varname varvalue} to define an environmental
-variable, which can be called later using \texttt{\%varname\%}.
+variable (also called control variable), which value can be accessed later by using
+\texttt{\%varname\%}. Additionally, you can set a control variable via a user defined
+command line parameter option, e.g., \texttt{gams~trnsport.gms --varname=varvalue}.
 \end{tabularx}
 
 \section{Options}
 
 Some options can be set using the following syntax:\\
 \texttt{option} \emph{option\_name} \texttt{=} \emph{option\_value}\texttt{;}\\
-Main options:\\
+Main options (see the
+\href{http://www.gams.com/help/topic/gams.doc/userguides/userguide/_u_g__option_statement.html?cp=0_2_0_2_4_1#UG_OptionStatement_ListOfOptions}{documentation}
+for the complete list):\\
 \begin{tabularx}{\columnwidth}{@{}>{\ttfamily}lcX@{}}
   \emph{\textrm{option\_name}} & Default & Interpretation \\
   \toprule
   decimals & 3 & Number of decimals printed.\\
-  iterlim& 1000 & Limit on the number of iterations used to solve a model. \\
+  iterlim& 2e9 & Limit on the number of iterations used to solve a model. \\
   limcol& 3 & Control the number of columns (variables) listed at each solve.\\
   limrow& 3 & Control the number of rows (equations) listed at each solve.\\
   reslim& 1000 & Limit on the units of processor time used to solve a model.\\
@@ -401,8 +420,17 @@ file during the compile phase.
 \href{http://www.christophegouel.com}{Christophe Gouel}. Include materials from \emph{GAMS -- A User's Guide} (with permissions). \\
 See \url{https://github.com/christophe-gouel/GAMS-Cheat-Sheet} for the sources.
 
-Revision: 1.2, Date: \today{}.
+Revision: 1.3, Date: \today{}.
+
+For more information, see \href{http://www.gams.com/help/index.jsp}{GAMS
+  Documentation Center} and \href{https://www.youtube.com/user/GAMSLessons}{GAMS
+  Lessons YouTube channel}.
 
 \end{multicols}
 
 \end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
