@@ -1,6 +1,6 @@
 \documentclass[10pt,landscape,a4paper]{article}
 
-\usepackage{array,tabularx,booktabs}
+\usepackage{array,tabularx,booktabs,microtype}
 
 \usepackage{graphicx}
 
@@ -94,24 +94,24 @@
 \section{Declarations}
 GAMS objects have to be declared before their first use. Main objects are\\
 \begin{tabularx}{\columnwidth}{@{}>{\ttfamily}l>{\raggedright\arraybackslash}X@{}}
-  set & Collection of elements used for indexing. $S=\left\{a,b,c\right\}$ is
-  written in GAMS as \texttt{SET S / a, b, c /;}. A sequence of elements, such
-  as t=1990:2010, can be entered as \texttt{SET t 'Year' / 1900*2010 /;}, where
+  Set & Collection of elements used for indexing. $S=\left\{a,b,c\right\}$ is
+  written in GAMS as \texttt{Set S / a, b, c /;}. A sequence of elements, such
+  as t=1990:2010, can be entered as \texttt{Set t 'Year' / 1900*2010 /;}, where
   \texttt{'Year'} is an optional
   explanatory text.\\
-  parameter\textrm{, }scalar\textrm{, }table & Exogenous data (given input) to
-  be entered or calculated by the modeler. \texttt{scalar} is 0-dimenional,
-  \texttt{parameter} is n-dimensional and \texttt{table} is a n-dimensional parameter
+  Parameter\textrm{, }Scalar\textrm{, }Table & Exogenous data (given input) to
+  be entered or calculated by the modeler. \texttt{Scalar} is 0-dimenional,
+  \texttt{Parameter} is $n$-dimensional and \texttt{Table} is a $n$-dimensional parameter
   that expects the input in table format.
   \\
-  variable & Endogenous variables to be determined by GAMS. It is possible to
-  enter the following prefixes before \texttt{variable} to specify the variable
+  Variable & Endogenous variables to be determined by GAMS. It is possible to
+  enter the following prefixes before \texttt{Variable} to specify the variable
   type:
-  \texttt{positive}, \texttt{negative}, \texttt{binary} (variable is 0 or 1), \texttt{integer}.\\
-  equation   & Keyword to define an algebraic relationship between variables. \\
-  model & Collection of equations. To declare a model that includes all the
-  equations:\linebreak{} \texttt{model} \emph{model\_name} \texttt{/ all
-    /;}. \linebreak{}To include a list of equations:\linebreak{} \texttt{model}
+  \texttt{Positive}, \texttt{Negative}, \texttt{Binary} (variable is 0 or 1), \texttt{Integer}.\\
+  Equation   & Keyword to define an algebraic relationship between variables. \\
+  Model & Collection of equations. To declare a model that includes all the
+  equations:\linebreak{} \texttt{Model} \emph{model\_name} \texttt{/ all
+    /;}. \linebreak{}To include a list of equations:\linebreak{} \texttt{Model}
   \emph{model\_name} \texttt{/} \emph{eq\_name1}\texttt{,} \emph{eq\_name2}
   \texttt{/;}
 \end{tabularx}
@@ -121,12 +121,12 @@ The general expression to declare and define data is\\
 \emph{data\_type} \emph{symbol\_name} [\emph{symbol\_description}] [\verb!/! \emph{symbol\_value} \verb!/!]\verb!;!\\
 Examples:
 \begin{verbatim}
-scalar rho "discount rate" / .15 /;
-parameter b(i) / seattle 20, san-diego 45 /
-          salaries(employee,manager,department)
-            /anderson .murphy .toy       = 6000
-               hendry .smith  .toy       = 9000
-              hoffman .morgan .cosmetics = 8000 / ;
+Scalar rho "discount rate" / .15 /;
+Parameters b(i) / seattle 20, san-diego 45 /
+           salaries(employee,manager,department)
+             / anderson .murphy .toy       = 6000
+                 hendry .smith  .toy       = 9000
+                hoffman .morgan .cosmetics = 8000 /;
 \end{verbatim}
 
 \section{Variable attributes}
@@ -135,7 +135,7 @@ To each variable is associated a series of attributes:\\
   .l & Level of the variable. Receives new values when a model is solved.\\
   .lo & Lower bound (default to \texttt{-inf}).\\
   .up & Upper bound (default to \texttt{inf}).\\
-  .fx & To fix a variable (sets the value for the attributes .l, .lo and .up):\linebreak{}
+  .fx & To fix a variable (sets the value for the attributes \texttt{.l}, \texttt{.lo} and \texttt{.up}):\linebreak{}
   \texttt{x.fx(i) = 1;}\\
   .m & Marginal (or dual) value. Receives new values when a model is solved.
 \end{tabular}
@@ -144,7 +144,7 @@ To each variable is associated a series of attributes:\\
 Arithmetic operations:\\
 \verb!+!, \verb!-!, \verb!*!, \verb!/!, \verb!**! (exponentiation, \verb!x**y!
 is defined only for \verb!x!$\ge$0, if \texttt{x} can be negative, use
-\verb!power(x,y)! instead).
+\verb!power(x, y)! instead).
 
 Most common functions
 (see the \href{http://www.gams.com/help/topic/gams.doc/userguides/userguide/_u_g__parameters.html?cp=0_2_0_1_3_2_2_0#UG_Parameters_IntrinsicFunctions}{documentation} for the list of intrinsic functions):\\
@@ -163,21 +163,21 @@ Special symbols:\\
   inf& Plus infinity.\\
   -inf& Minus infinity.\\
   na& Not available, used for missing data.\\
-  undf& Undefined, result of an undefined operation such as \texttt{3/0}.\\
+  undf& Undefined, result of an undefined operation such as \texttt{3 / 0}.\\
   eps& Numerically equal to zero, but considered as existing. For example,
-  \texttt{sum(i\$z(i),1)} equals \texttt{0} if \texttt{z(i)=0} and
-  \texttt{sum(i\$z(i),1)} equals \texttt{card(i)} if \texttt{z(i)=eps}.
+  \texttt{sum(i \$ z(i), 1)} equals \texttt{0} if \texttt{z(i) = 0} and
+  \texttt{sum(i \$ z(i), 1)} equals \texttt{card(i)} if \texttt{z(i) = eps}.
 \end{tabularx}
 
 \section{Conditional expressions with dollar condition}
 
 Logical expression can be expressed with a dollar condition. For example:\\
-\texttt{a\$(b > 1.5) = 2;} means if \texttt{b} is greater than \texttt{1.5} then
+\texttt{a \$ (b > 1.5) = 2;} means if \texttt{b} is greater than \texttt{1.5} then
 \texttt{a} equals \texttt{2}. If \texttt{b} is less than-or-equal to
 \texttt{1.5} then the value of \texttt{a} remains unchanged.
 
 It can also be used on the right hand side. For example:\\
-\texttt{a = 2\$(b > 1.5);} means that \texttt{a} equals \texttt{2} if \texttt{b}
+\texttt{a = 2 \$ (b > 1.5);} means that \texttt{a} equals \texttt{2} if \texttt{b}
 is greater than \texttt{1.5}, else \texttt{a} equals \texttt{0}.
 
 \section{Indexing}
@@ -187,39 +187,39 @@ is greater than \texttt{1.5}, else \texttt{a} equals \texttt{0}.
 \begin{tabularx}{\columnwidth}{@{}>{\ttfamily}lX@{}}
 x(i) = 12; & Assign all elements of \texttt{x} to 12.\\
 b('seattle') = 20; & Assign the element \texttt{seattle} of \texttt{b} to 20.\\
-sum(i,x(i)) & Sum \texttt{x} over the set \texttt{i}: $\sum_{i}x_{i}$.\\
-sum((i,j),x(i,j)) & Sum \texttt{x} over the sets \texttt{i} and \texttt{j}: $\sum_{i,j}x_{i,j}$.\\
-prod(j,y(i,j) & Multiply \texttt{y} over the set \texttt{j}:
+sum(i, x(i)) & Sum \texttt{x} over the set \texttt{i}: $\sum_{i}x_{i}$.\\
+sum((i,j), x(i,j)) & Sum \texttt{x} over the sets \texttt{i} and \texttt{j}: $\sum_{i,j}x_{i,j}$.\\
+prod(j, y(i,j) & Multiply \texttt{y} over the set \texttt{j}:
 $\prod_{j}y_{i,j}$.\\
-alias(i,j) & Declare that the set \texttt{j} can be used instead of
+Alias(i, j) & Declare that the set \texttt{j} can be used instead of
 \texttt{i}.\\
-y = smax(i,x(i)); \textrm{or} y = smin(i,x(i)); & Find the largest or smallest
+y = smax(i, x(i)); \textrm{or} y = smin(i, x(i)); & Find the largest or smallest
 value of a symbol indexed over a set.
 \end{tabularx}
 
 \subsection{Advanced indexing}
 
-On ordered sets (for example one defined by \texttt{SET t 'Year' / 1900*2010 /;}):
+On ordered sets (for example one defined by \texttt{Set t 'Year' / 1900*2010 /;}):
 \begin{tabularx}{\columnwidth}{@{}>{\ttfamily}l>{\raggedright\arraybackslash}X@{}}
 ord(t)& Returns the position of a member in a set:\linebreak{}
-\texttt{parameter val(t);}\linebreak{}
+\texttt{Parameter val(t);}\linebreak{}
 \texttt{val(t) = ord(t);}\linebreak{}
 Here \texttt{val('1900')} will be \texttt{1}, \texttt{val('1909')} \texttt{10}, and \texttt{val('2010')} \texttt{111}.\\
 card(t) & Returns the number of elements in a set: \texttt{card(t)} will return \texttt{111}.\\
 \textrm{lags and leads} & It is possible to use lag or lead operators on ordered
 sets. For example an equation defining the evolution of capital stock would
 be:\linebreak{}
-\texttt{eq\_k(t+1).. k(t+1) =e= (1-delta)*k(t) + i(t);}
+\texttt{eq\_k(t+1).. k(t+1) =e= (1 - delta) * k(t) + i(t);}
 \end{tabularx}
 
-\texttt{sameas(r,s)} can be used to test if the active elements of \texttt{r}
-and \texttt{s} are the same. For example: \texttt{a(r,s)\$(not sameas(r,s)) =
+\texttt{sameAs(r, s)} can be used to test if the active elements of \texttt{r}
+and \texttt{s} are the same. For example: \texttt{a(r,s) \$ (not sameAs(r, s)) =
   10;} would assign \texttt{10} to all non-diagonal elements of \texttt{a}.
 
 It is possible to define subsets: sets whose members must all be members of some
 larger sets. For example:\\
 \begin{verbatim}
-set
+Sets
   i "all sectors" / light-ind, food+agr, heavy-ind, services /
   t(i) "traded sectors" / light-ind, food+agr, heavy-ind /;
 \end{verbatim}
@@ -229,11 +229,11 @@ the ordered parent set.
 The assignment can also be made dynamically (the set is then called a dynamic
 set):
 \begin{tabularx}{\columnwidth}{@{}>{\ttfamily}l>{\raggedright\arraybackslash}X@{}}
-set j(i);& Declare \texttt{j} as a subset of \texttt{i}. \\
+Set j(i);& Declare \texttt{j} as a subset of \texttt{i}. \\
 j(i) = yes;& Assign all elements of \texttt{i} to \texttt{j}.\\
 j('light-ind') = no;& Remove the element \texttt{'light-ind'} from \texttt{j}.
 \end{tabularx}
-Or alternatively: \texttt{j(i)\$(not sameas(i,'light-ind')) = yes;}.
+Or alternatively: \texttt{j(i) \$ (not sameAs(i, 'light-ind')) = yes;}.
 
 Dynamic subsets present the following restrictions: it is not possible to
 declare variables defined on dynamic subsets; and they are not ordered, even if
@@ -242,7 +242,7 @@ their parent sets are.
 \section{Equation definition}
 An equation named \emph{eqname} is defined by\\
 \emph{eqname}(\emph{index})\verb!..! expression \emph{eq\_type} expression \verb!;!\\
-Example: \verb!cost.. z =e= sum((i,j), c(i,j)*x(i,j));!
+Example: \verb!cost.. z =e= sum((i,j), c(i,j) * x(i,j));!
 
 Main equation types (\emph{eq\_type}):\\
 \begin{tabular}{@{}ll@{}}
@@ -285,17 +285,17 @@ GAMS contains 3 types of loops:
 \begin{description}
 \item[\texttt{for}] to loop over a parameter:\\
 \begin{verbatim}
-scalar i;
-for(i = 1 to 1000 by 10,
+Scalar i;
+for (i = 1 to 1000 by 10,
   display i;
 );
 \end{verbatim}
 \item[\texttt{loop}] to loop over a set:\\
-  \verb!loop(t, pop(t+1) = pop(t) + growth(t));!
+  \verb!loop (t, pop(t+1) = pop(t) + growth(t));!
 \item[\texttt{while}] to loop over a general condition:\\
 \begin{verbatim}
-scalar x / 0 /;
-while(x <= 10,
+Scalar x / 0 /;
+while (x <= 10,
   x = x + 1;
 );
 \end{verbatim}
@@ -303,9 +303,9 @@ while(x <= 10,
 
 Use of the \verb!if-else! statement:\\
 \begin{verbatim}
-if(x <= 0,
+if (x <= 0,
   y = 1;
-elseif(x > 0 and x < 1),
+elseif (x > 0 and x < 1),
   y = 2;
 else
   y = 3;
@@ -313,7 +313,7 @@ else
 \end{verbatim}
 
 To stop GAMS if a condition is met use \verb!abort!:\\
-\verb!abort$(abs(residuals) > 1E-6) "Residual not null", residuals;!
+\verb!abort $ (abs(residuals) > 1E-6) "Residual not null", residuals;!
 
 \section{Dollar control}
 
@@ -322,13 +322,13 @@ symbol can be placed in the first column or elsewhere on a line if using
 \texttt{\$\$} as first two characters. They are executed at compile time, so
 before any calculation takes place. Most important dollar control options (see
 the
-\href{http://www.gams.com/help/topic/gams.doc/userguides/userguide/_u_g__dollar_control_options.html?cp=0_2_0_2_3_1#UG_DollarControl_ListOfDollarControlOptions}{documentation}
+\href{https://www.gams.com/latest/docs/UG_DollarControlOptions.html}{documentation}
 for the complete list):
 \begin{tabularx}{\columnwidth}{@{}>{\ttfamily}lX@{}}
 \$exit & GAMS stop reading the file after \texttt{\$exit}.\\
 \$include & Use \texttt{\$include filename} to insert the contents of the
 file.\\
-\$ontext\textrm{/}\$offtext & Use to enclose severals lines of comments.\\
+\$onText\textrm{/}\$offText & Use to enclose severals lines of comments.\\
 \$set & Use \texttt{\$set varname varvalue} to define an environmental
 variable (also called control variable), which value can be accessed later by using
 \texttt{\%varname\%}. Additionally, you can set a control variable via a user defined
@@ -340,20 +340,20 @@ command line parameter option, e.g., \texttt{gams~trnsport.gms --varname=varvalu
 Some options can be set using the following syntax:\\
 \texttt{option} \emph{option\_name} \texttt{=} \emph{option\_value}\texttt{;}\\
 Main options (see the
-\href{http://www.gams.com/help/topic/gams.doc/userguides/userguide/_u_g__option_statement.html?cp=0_2_0_2_4_1#UG_OptionStatement_ListOfOptions}{documentation}
+\href{https://www.gams.com/latest/docs/UG_OptionStatement.html}{documentation}
 for the complete list):\\
 \begin{tabularx}{\columnwidth}{@{}>{\ttfamily}lcX@{}}
   \emph{\textrm{option\_name}} & Default & Interpretation \\
   \toprule
   decimals & 3 & Number of decimals printed.\\
-  iterlim& 2e9 & Limit on the number of iterations used to solve a model. \\
-  limcol& 3 & Control the number of columns (variables) listed at each solve.\\
-  limrow& 3 & Control the number of rows (equations) listed at each solve.\\
-  reslim& 1000 & Limit on the units of processor time used to solve a model.\\
+  iterLim& 2e9 & Limit on the number of iterations used to solve a model. \\
+  limCol& 3 & Control the number of columns (variables) listed at each solve.\\
+  limRow& 3 & Control the number of rows (equations) listed at each solve.\\
+  resLim& 1000 & Limit on the units of processor time used to solve a model.\\
   \emph{\textrm{solver}} \textrm{(}cns\textrm{, }nlp\textrm{, }lp\textrm{, \ldots)}&
   Installation default& Control the solver used to solve a particular model type.
 \end{tabularx}
-Example: \texttt{option limcol = 0;}
+Example: \texttt{option limCol = 0;}
 
 \section{Comments}
 
@@ -361,24 +361,24 @@ A line starting with an asterisk '\verb!*!' is commented:\\
 \verb!* This line is a comment!
 
 To comment several lines, it is possible to place them between a pair of
-\verb!$ontext!/\verb!$offtext!:\\
+\verb!$onText!/\verb!$offText!:\\
 \begin{verbatim}
-$ontext
-Any lines between $ontext and $offtext are commented
-$offtext
+$onText
+Any lines between $onText and $offText are commented
+$offText
 \end{verbatim}
 
-End-of-line comments can be enabled using \verb!$eolcom! followed by the
+End-of-line comments can be enabled using \verb!$eolCom! followed by the
 chosen special character:\\
 \begin{verbatim}
-$eolcom #
+$eolCom #
 x = 1; # This is an end-of-line comment
 \end{verbatim}
 
-In-line comments can be enabled using \verb!$inlinecom! followed by a pair of
+In-line comments can be enabled using \verb!$inlineCom! followed by a pair of
 one or two character sequence (default to \verb!/* */!):\\
 \begin{verbatim}
-$inlinecom { }
+$inlineCom { }
 x { This is an in-line comment } = 1;
 \end{verbatim}
 
@@ -393,13 +393,13 @@ results, and to import/export data from various file formats (e.g., csv, Excel,
 \subsection{Compile phase (before any calculation)}
 
 \begin{tabularx}{1.0\columnwidth}{@{}>{\ttfamily}lX@{}}
-  \$gdxin \emph{\textrm{file\_name.gdx}} & Open the GDX file for reading. \\
+  \$gdxIn \emph{\textrm{file\_name.gdx}} & Open the GDX file for reading. \\
   \$load \emph{\textrm{id1 id2=gdxid2}} & Read symbols \emph{id1} and
   \emph{gdxid2} from the GDX
   file and assign them to \emph{id1} and \emph{id2} that have been previously declared. \\
-  \$gdxin & Close the GDX file currently open.
+  \$gdxIn & Close the GDX file currently open.
 \end{tabularx}
-Same thing with \texttt{\$gdxout} and \texttt{\$unload} to write data to a GDX
+Same thing with \texttt{\$gdxOut} and \texttt{\$unLoad} to write data to a GDX
 file during the compile phase.
 
 \subsection{Execution phase (after calculations)}
@@ -420,7 +420,7 @@ file during the compile phase.
 \href{http://www.christophegouel.com}{Christophe Gouel}. Include materials from \emph{GAMS -- A User's Guide} (with permissions). \\
 See \url{https://github.com/christophe-gouel/GAMS-Cheat-Sheet} for the sources.
 
-Revision: 1.3, Date: \today{}.
+Revision: 1.4, Date: \today{}.
 
 For more information, see \href{http://www.gams.com/help/index.jsp}{GAMS
   Documentation Center} and \href{https://www.youtube.com/user/GAMSLessons}{GAMS
