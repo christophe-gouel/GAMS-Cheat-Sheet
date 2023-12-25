@@ -209,7 +209,7 @@ card(t) & Returns the number of elements in a set: \texttt{card(t)} will return 
 \textrm{lags and leads} & It is possible to use lag or lead operators on ordered
 sets. For example an equation defining the evolution of capital stock would
 be:\linebreak{}
-\texttt{eq\_k(t+1).. k(t+1) =e= (1 - delta) * k(t) + i(t);}
+\texttt{eq\_k(t+1) .. k(t+1) =e= (1 - delta) * k(t) + i(t);}
 \end{tabularx}
 
 \texttt{sameAs(r, s)} can be used to test if the active elements of \texttt{r}
@@ -241,8 +241,8 @@ their parent sets are.
 
 \section{Equation definition}
 An equation named \emph{eqname} is defined by\\
-\emph{eqname}(\emph{index})\verb!..! expression \emph{eq\_type} expression \verb!;!\\
-Example: \verb!cost.. z =e= sum((i,j), c(i,j) * x(i,j));!
+\emph{eqname}(\emph{index}) \verb!..! expression \emph{eq\_type} expression \verb!;!\\
+Example: \verb!cost .. z =e= sum((i,j), c(i,j) * x(i,j));!
 
 Main equation types (\emph{eq\_type}):\\
 \begin{tabular}{@{}ll@{}}
@@ -422,7 +422,7 @@ file during the compile phase.
 \href{https://www.christophegouel.com}{Christophe Gouel}. Include materials from \emph{GAMS -- A User's Guide} (with permissions). \\
 See \url{https://github.com/christophe-gouel/GAMS-Cheat-Sheet} for the sources.
 
-Revision: 1.4.1, Date: \today{}.
+Revision: 1.4.2, Date: \today{}.
 
 For more information, see \href{https://www.gams.com/latest/docs/}{GAMS
   Documentation Center} and \href{https://www.youtube.com/user/GAMSLessons}{GAMS
