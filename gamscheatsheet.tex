@@ -96,8 +96,8 @@ GAMS objects have to be declared before their first use. Main objects are\\
 \begin{tabularx}{\columnwidth}{@{}>{\ttfamily}l>{\raggedright\arraybackslash}X@{}}
   Set & Collection of elements used for indexing. $S=\left\{a,b,c\right\}$ is
   written in GAMS as \texttt{Set S / a, b, c /;}. A sequence of elements, such
-  as t=1990:2010, can be entered as \texttt{Set t 'Year' / 1900*2010 /;}, where
-  \texttt{'Year'} is an optional
+  as t=1990:2010, can be entered as \texttt{Set t "Year" / 1900*2010 /;}, where
+  \texttt{"Year"} is an optional
   explanatory text.\\
   Parameter\textrm{, }Scalar\textrm{, }Table & Exogenous data (given input) to
   be entered or calculated by the modeler. \texttt{Scalar} is 0-dimenional,
@@ -186,12 +186,12 @@ is greater than \texttt{1.5}, else \texttt{a} equals \texttt{0}.
 
 \begin{tabularx}{\columnwidth}{@{}>{\ttfamily}lX@{}}
 x(i) = 12; & Assign all elements of \texttt{x} to 12.\\
-b('seattle') = 20; & Assign the element \texttt{seattle} of \texttt{b} to 20.\\
+b("seattle") = 20; & Assign the element \texttt{seattle} of \texttt{b} to 20.\\
 sum(i, x(i)) & Sum \texttt{x} over the set \texttt{i}: $\sum_{i}x_{i}$.\\
 sum((i,j), x(i,j)) & Sum \texttt{x} over the sets \texttt{i} and \texttt{j}: $\sum_{i,j}x_{i,j}$.\\
 prod(j, y(i,j) & Multiply \texttt{y} over the set \texttt{j}:
 $\prod_{j}y_{i,j}$.\\
-Alias(i, j) & Declare that the set \texttt{j} can be used instead of
+Alias(i,j) & Declare that the set \texttt{j} can be used instead of
 \texttt{i}.\\
 y = smax(i, x(i)); \textrm{or} y = smin(i, x(i)); & Find the largest or smallest
 value of a symbol indexed over a set.
@@ -199,22 +199,19 @@ value of a symbol indexed over a set.
 
 \subsection{Advanced indexing}
 
-On ordered sets (for example one defined by \texttt{Set t 'Year' / 1900*2010 /;}):
+On ordered sets (for example one defined by \texttt{Set t "Year" / 1900*2010 /;}):
 \begin{tabularx}{\columnwidth}{@{}>{\ttfamily}l>{\raggedright\arraybackslash}X@{}}
 ord(t)& Returns the position of a member in a set:\linebreak{}
 \texttt{Parameter val(t);}\linebreak{}
 \texttt{val(t) = ord(t);}\linebreak{}
-Here \texttt{val('1900')} will be \texttt{1}, \texttt{val('1909')} \texttt{10}, and \texttt{val('2010')} \texttt{111}.\\
+Here \texttt{val("1900")} will be \texttt{1}, \texttt{val("1909")} \texttt{10}, and \texttt{val("2010")} \texttt{111}.\\
 card(t) & Returns the number of elements in a set: \texttt{card(t)} will return \texttt{111}.\\
-\textrm{lags and leads} & It is possible to use lag or lead operators on ordered
-sets. For example an equation defining the evolution of capital stock would
+\textrm{lags and leads} & It is possible to use lag or lead operators on ordered sets. For example an equation defining the evolution of capital stock would
 be:\linebreak{}
 \texttt{eq\_k(t+1) .. k(t+1) =e= (1 - delta) * k(t) + i(t);}
 \end{tabularx}
 
-\texttt{sameAs(r, s)} can be used to test if the active elements of \texttt{r}
-and \texttt{s} are the same. For example: \texttt{a(r,s) \$ (not sameAs(r, s)) =
-  10;} would assign \texttt{10} to all non-diagonal elements of \texttt{a}.
+\texttt{sameAs(r,s)} can be used to test if the active elements of \texttt{r} and \texttt{s} are the same. For example: \texttt{a(r,s) \$ (not sameAs(r,s)) = 10;} would assign \texttt{10} to all non-diagonal elements of \texttt{a}.
 
 It is possible to define subsets: sets whose members must all be members of some
 larger sets. For example:\\
@@ -231,9 +228,9 @@ set):
 \begin{tabularx}{\columnwidth}{@{}>{\ttfamily}l>{\raggedright\arraybackslash}X@{}}
 Set j(i);& Declare \texttt{j} as a subset of \texttt{i}. \\
 j(i) = yes;& Assign all elements of \texttt{i} to \texttt{j}.\\
-j('light-ind') = no;& Remove the element \texttt{'light-ind'} from \texttt{j}.
+j("light-ind") = no;& Remove the element \texttt{"light-ind"} from \texttt{j}.
 \end{tabularx}
-Or alternatively: \texttt{j(i) \$ (not sameAs(i, 'light-ind')) = yes;}.
+Or alternatively: \texttt{j(i) \$ (not sameAs(i,"light-ind")) = yes;}.
 
 Dynamic subsets present the following restrictions: it is not possible to
 declare variables defined on dynamic subsets; and they are not ordered, even if
@@ -407,10 +404,10 @@ file during the compile phase.
 \subsection{Execution phase (after calculations)}
 
 \begin{tabularx}{1.0\columnwidth}{@{}>{\ttfamily}lX@{}}
-  execute\_load '\emph{\textrm{file\_name.gdx}}' \emph{\textrm{id1, id2=gdxid2}}
+  execute\_load "\emph{\textrm{file\_name.gdx}}" \emph{\textrm{id1, id2=gdxid2}}
   & Read symbols \emph{id1} and \emph{gdxid2} from the GDX
   file and assign them to \emph{id1} and \emph{id2} that have been previously declared.\\
-  execute\_unload '\emph{\textrm{file\_name.gdx}}' \emph{\textrm{id1,
+  execute\_unload "\emph{\textrm{file\_name.gdx}}" \emph{\textrm{id1,
       id2=gdxid2}} & Write to the GDX file the symbols \emph{id1} and \emph{id2}
   and assign \emph{id2} to the symbol \emph{gdxid2}.
 \end{tabularx}
@@ -422,7 +419,7 @@ file during the compile phase.
 \href{https://www.christophegouel.com}{Christophe Gouel}. Include materials from \emph{GAMS -- A User's Guide} (with permissions). \\
 See \url{https://github.com/christophe-gouel/GAMS-Cheat-Sheet} for the sources.
 
-Revision: 1.4.2, Date: \today{}.
+Revision: 1.5.0, Date: \today{}.
 
 For more information, see \href{https://www.gams.com/latest/docs/}{GAMS
   Documentation Center} and \href{https://www.youtube.com/user/GAMSLessons}{GAMS
