@@ -9,7 +9,7 @@
 \definecolor{DarkBlue}{rgb}{0,0.08,0.45}
 
 \usepackage{multicol}
-\usepackage{calc}
+\setlength{\columnseprule}{1pt}\usepackage{calc}
 \usepackage{ifthen}
 \usepackage[landscape]{geometry}
 \usepackage{hyperref}
@@ -191,7 +191,7 @@ sum(i, x(i)) & Sum \texttt{x} over the set \texttt{i}: $\sum_{i}x_{i}$.\\
 sum((i,j), x(i,j)) & Sum \texttt{x} over the sets \texttt{i} and \texttt{j}: $\sum_{i,j}x_{i,j}$.\\
 prod(j, y(i,j) & Multiply \texttt{y} over the set \texttt{j}:
 $\prod_{j}y_{i,j}$.\\
-Alias(i,j) & Declare that the set \texttt{j} can be used instead of
+Alias (i,j) & Declare that the set \texttt{j} can be used instead of
 \texttt{i}.\\
 y = smax(i, x(i)); \textrm{or} y = smin(i, x(i)); & Find the largest or smallest
 value of a symbol indexed over a set.
@@ -280,34 +280,43 @@ decimals.
 
 \section{Flow control}
 
-GAMS contains 3 types of loops:
+GAMS contains 4 types of loops (use \texttt{break} and \texttt{continue} to break out of a loop and to jump to the next iteration):
 \begin{description}
 \item[\texttt{for}] to loop over a parameter:\\
+\begin{multicols}{2}
 \begin{verbatim}
 Scalar i;
 for (i = 1 to 1000 by 10,
   display i;
 );
 \end{verbatim}
+  \columnbreak
+\begin{verbatim}
+
+for (i = 1000 downto 1 by 10,
+  display i;
+);
+\end{verbatim}
+\end{multicols}
 \item[\texttt{loop}] to loop over a set:\\
   \verb!loop (t, pop(t+1) = pop(t) + growth(t));!
-\item[\texttt{while}] to loop over a general condition:\\
+\item[\texttt{while}] to loop over a logical condition:\\
 \begin{verbatim}
 Scalar x / 0 /;
-while (x <= 10,
-  x = x + 1;
-);
+while (x <= 10, x = x + 1;);
+\end{verbatim}
+\item[repeat] to loop over a logical condition with at least one execution
+\begin{verbatim}
+repeat (x = x + 1; until x <= 10);
+
 \end{verbatim}
 \end{description}
 
 Use of the \verb!if-else! statement:\\
 \begin{verbatim}
-if (x <= 0,
-  y = 1;
-elseif (x > 0 and x < 1),
-  y = 2;
-else
-  y = 3;
+if (x <= 0,               y = 1;
+elseif (x > 0 and x < 1), y = 2;
+else                      y = 3;
 );
 \end{verbatim}
 
@@ -419,7 +428,7 @@ file during the compile phase.
 \href{https://www.christophegouel.com}{Christophe Gouel}. Include materials from \emph{GAMS -- A User's Guide} (with permissions). \\
 See \url{https://github.com/christophe-gouel/GAMS-Cheat-Sheet} for the sources.
 
-Revision: 1.5.0, Date: \today{}.
+Revision: 1.6.0, Date: \today{}.
 
 For more information, see \href{https://www.gams.com/latest/docs/}{GAMS
   Documentation Center} and \href{https://www.youtube.com/user/GAMSLessons}{GAMS
@@ -430,6 +439,6 @@ For more information, see \href{https://www.gams.com/latest/docs/}{GAMS
 \end{document}
 
 %%% Local Variables:
-%%% mode: latex
+%%% mode: LaTeX
 %%% TeX-master: t
 %%% End:
